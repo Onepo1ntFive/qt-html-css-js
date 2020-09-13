@@ -9,6 +9,7 @@
   "author": "SergeySolovyev",
   "license": "ISC",
   "devDependencies": {
-    "gulp": "^4.0.2"
+    "gulp": "^4.0.2",
+    "pug": "^3.0.0"
   }
 }

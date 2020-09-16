@@ -1,8 +1,12 @@
 'use strict';
 
 const gulp = require('gulp'),
+    { parallel, series } = require('gulp'),
     sass = require('gulp-sass'),
+    pug = require('gulp-pug'),
     sourcemaps = require('gulp-sourcemaps'),
+    imagemin = require("gulp-imagemin"),
+    rimraf = require('rimraf'),
     browserSync = require("browser-sync"),
     reload = browserSync.reload;
 
@@ -11,28 +15,27 @@ const path = {
         html: 'build/',
         js: 'build/js/',
         style: 'build/css/',
-        img: 'build/images/',
+        images: 'build/images/',
         fonts: 'build/fonts/'
     },
     src: {
-        html: 'src/**/*.html',
         pug: 'src/**/*.pug',
         js: 'src/**/*.js',
         style: 'src/style/*.scss',
-        img: 'src/images/**/*.*',
+        images: 'src/images/**/*.*',
         fonts: 'src/fonts/**/*.*'
     },
     watch: {
-        html: 'src/**/*.html',
         pug: 'src/**/*.pug',
         js: 'src/**/*.js',
-        style: 'src/style/*.scss',
-        img: 'src/images/**/*.*',
+        style: 'src/style/**/*.scss',
+        images: 'src/images/**/*.*',
         fonts: 'src/fonts/**/*.*'
     },
     clean: './build'
 }
 
+// server
 const config = {
     server: {
         baseDir: "./build"
@@ -43,13 +46,53 @@ const config = {
     logPrefix: "frontend"
 };
 
-
-gulp.task('sass', function () {
-    return gulp.src(path.watch.style)
-        .pipe(sass().on('error', sass.logError))
-        .pipe(gulp.dest(path.build.style));
+gulp.task('webserver', function () {
+    return browserSync(config);
 });
 
-gulp.task('sass:watch', function () {
-    gulp.watch(path.src.style, ['sass']);
+// clean build
+gulp.task('clean', function (callback) {
+    return rimraf(path.clean, callback);
 });
+
+// build tasks
+gulp.task('pug:build', function buildHTML() {
+    return gulp.src(path.src.pug)
+        .pipe(pug({ pretty: true }))
+        .pipe(gulp.dest(path.build.html))
+        .pipe(reload({stream: true}));
+});
+
+gulp.task('css:build', function () {
+    return gulp.src(path.src.style)
+        .pipe(sourcemaps.init())
+        .pipe(sass())
+        .pipe(sourcemaps.write())
+        .pipe(gulp.dest(path.build.style))
+        .pipe(reload({stream: true}));
+});
+
+gulp.task('image:build', function () {
+    return gulp.src(path.src.images)
+        .pipe(imagemin())
+        .pipe(gulp.dest(path.build.images))
+        .pipe(reload({stream: true}));
+});
+
+// build all
+gulp.task('build', series('pug:build', 'css:build', 'image:build'));
+
+// watch
+gulp.task('watch', function() {
+    gulp.watch([path.watch.pug], function(event, callback) {
+        gulp.start('pug:build')
+    });
+    gulp.watch([path.watch.style], function(event, callback) {
+        gulp.start('css:build')
+    });
+    gulp.watch([path.watch.images], function(event, callback) {
+        gulp.start('images:build')
+    });
+});
+
+gulp.task('default', series('build', 'webserver', 'watch'));

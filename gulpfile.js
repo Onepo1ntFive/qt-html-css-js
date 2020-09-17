@@ -1,7 +1,7 @@
 'use strict';
 
 const gulp = require('gulp'),
-    { parallel, series } = require('gulp'),
+    { watch, parallel, series } = require('gulp'),
     sass = require('gulp-sass'),
     pug = require('gulp-pug'),
     sourcemaps = require('gulp-sourcemaps'),
@@ -74,7 +74,7 @@ gulp.task('css:build', function () {
 
 gulp.task('image:build', function () {
     return gulp.src(path.src.images)
-        .pipe(imagemin())
+        // .pipe(imagemin())
         .pipe(gulp.dest(path.build.images))
         .pipe(reload({stream: true}));
 });
@@ -83,16 +83,12 @@ gulp.task('image:build', function () {
 gulp.task('build', series('pug:build', 'css:build', 'image:build'));
 
 // watch
-gulp.task('watch', function() {
-    gulp.watch([path.watch.pug], function(event, callback) {
-        gulp.start('pug:build')
-    });
-    gulp.watch([path.watch.style], function(event, callback) {
-        gulp.start('css:build')
-    });
-    gulp.watch([path.watch.images], function(event, callback) {
-        gulp.start('images:build')
-    });
+gulp.task('watch', (done) => {
+    watch(path.watch.pug, gulp.series('pug:build'));
+    // watch(path.watch.css, gulp.series('css:build'));
+    // watch(path.watch.images, gulp.series('images:build'));
+
+    done();
 });
 
-gulp.task('default', series('build', 'webserver', 'watch'));
+gulp.task('default', series('build', 'watch', 'webserver'));

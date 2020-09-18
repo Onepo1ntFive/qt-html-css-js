@@ -7,6 +7,8 @@ const
     sourcemaps = require('gulp-sourcemaps'),
     concat = require('gulp-concat'),
     imagemin = require("gulp-imagemin"),
+    webp = require("gulp-webp"),
+    newer = require("gulp-newer"),
     rimraf = require('rimraf'),
     browserSync = require("browser-sync").create(),
     reload = browserSync.reload;
@@ -52,27 +54,65 @@ function browserSyncStart() {
     })
 }
 
+
+function html() {
+    return src(path.src.pug)
+        .pipe(pug({ pretty: true }))
+        .pipe(dest(path.build.html))
+        .pipe(browserSync.stream())
+}
+
 function scripts() {
     return src(path.src.js)
         .pipe(concat('app.min.js'))
         .pipe(dest(path.build.js))
+        .pipe(browserSync.stream())
 }
 
-function style() {
+function styles() {
     return src(path.src.style)
-        // .pipe(sourcemaps.init())
+        .pipe(sourcemaps.init())
         .pipe(sass())
-        // .pipe(sourcemaps.write())
-        .pipe(dest(path.build.style));
+        .pipe(sourcemaps.write())
+        .pipe(dest(path.build.style))
+        .pipe(browserSync.stream())
+}
+
+function imagesBuild() {
+    return src(path.src.images)
+        .pipe(newer(path.build.images))
+        .pipe(imagemin())
+        .pipe(dest(path.build.images))
+}
+
+function webpBuild() {
+    return src(path.src.images)
+        .pipe(newer(path.build.images))
+        .pipe(webp())
+        .pipe(dest(path.build.images))
+}
+
+function images() {
+    return parallel(imagesBuild, webpBuild)
+}
+
+function clean(cb) {
+    return rimraf(path.clean, cb);
 }
 
 function startWatch() {
-    watch(path.watch.js, scripts)
-    watch(path.watch.style, style)
+    watch(path.watch.js, { usePolling: true }, scripts)
+    watch(path.watch.style, { usePolling: true }, styles)
+    watch(path.watch.pug, { usePolling: true }, html)
+    watch(path.watch.images, { usePolling: true }, images)
 }
 
-exports.browserSyncStart = browserSyncStart;
-exports.scripts = scripts;
-exports.style = style;
+exports.clean = clean;
 
-exports.default = parallel(scripts, style, startWatch)
+exports.browserSyncStart = browserSyncStart;
+exports.html = html;
+exports.scripts = scripts;
+exports.styles = styles;
+exports.images = images;
+
+exports.default = parallel(styles, html, scripts, images, browserSyncStart, startWatch);

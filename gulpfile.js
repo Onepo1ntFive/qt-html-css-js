@@ -6,15 +6,14 @@ const
     sass = require('gulp-sass'),
     sourcemaps = require('gulp-sourcemaps'),
     concat = require('gulp-concat'),
+    uglify = require('gulp-uglify-es').default,
     imagemin = require("gulp-imagemin"),
-    webp = require("gulp-webp"),
+    imagewebp = require("gulp-webp"),
     newer = require("gulp-newer"),
     rimraf = require('rimraf'),
-    browserSync = require("browser-sync").create(),
-    reload = browserSync.reload;
+    browserSync = require("browser-sync").create();
 
 // use later
-// uglify = require('gulp-uglify-es').default;
 
 const path = {
     build: {
@@ -23,6 +22,13 @@ const path = {
         style: 'build/css/',
         images: 'build/images/',
         fonts: 'build/fonts/'
+    },
+    dev: {
+        html: 'dev/',
+        js: 'dev/js/',
+        style: 'dev/css/',
+        images: 'dev/images/',
+        fonts: 'dev/fonts/'
     },
     src: {
         pug: 'src/**/*.pug',
@@ -39,18 +45,15 @@ const path = {
         images: 'src/images/**/*.*',
         fonts: 'src/fonts/**/*.*'
     },
-    clean: './build'
+    clean: './build',
+    cleanDev: './dev',
 }
 
 function browserSyncStart() {
     browserSync.init({
         server: {
-            baseDir: './build'
+            baseDir: './dev/'
         },
-        tunnel: true,
-        host: 'localhost',
-        port: 9000,
-        logPrefix: "frontend"
     })
 }
 
@@ -58,15 +61,26 @@ function browserSyncStart() {
 function html() {
     return src(path.src.pug)
         .pipe(pug({ pretty: true }))
-        .pipe(dest(path.build.html))
+        .pipe(dest(path.dev.html))
         .pipe(browserSync.stream())
+}
+// todo минификация
+function htmlBuild() {
+    return src(path.src.pug)
+        .pipe(pug())
+        .pipe(dest(path.build.html))
 }
 
 function scripts() {
     return src(path.src.js)
-        .pipe(concat('app.min.js'))
-        .pipe(dest(path.build.js))
+        .pipe(dest(path.dev.js))
         .pipe(browserSync.stream())
+}
+function scriptsBuild() {
+    return src(path.src.js)
+        .pipe(concat('app.min.js'))
+        .pipe(uglify())
+        .pipe(dest(path.build.js))
 }
 
 function styles() {
@@ -74,30 +88,40 @@ function styles() {
         .pipe(sourcemaps.init())
         .pipe(sass())
         .pipe(sourcemaps.write())
-        .pipe(dest(path.build.style))
+        .pipe(dest(path.dev.style))
         .pipe(browserSync.stream())
 }
+// todo минификация
+function stylesBuild() {
+    return src(path.src.style)
+        .pipe(sass({ outputStyle: 'compressed' }))
+        .pipe(dest(path.build.style))
+}
 
-function imagesBuild() {
+// todo Разобраться с dest. Что бы и в build и dev падало
+// todo newer
+function images() {
     return src(path.src.images)
-        .pipe(newer(path.build.images))
+        // .pipe(newer(path.build.images))
         .pipe(imagemin())
         .pipe(dest(path.build.images))
+        .pipe(dest(path.dev.images))
 }
-
-function webpBuild() {
+// todo Разобраться с dest. Что бы и в build и dev падало
+// todo newer
+function webp() {
     return src(path.src.images)
-        .pipe(newer(path.build.images))
-        .pipe(webp())
+        // .pipe(newer(path.build.images))
+        .pipe(imagewebp())
         .pipe(dest(path.build.images))
 }
 
-function images() {
-    return parallel(imagesBuild, webpBuild)
-}
 
 function clean(cb) {
     return rimraf(path.clean, cb);
+}
+function cleanDev(cb) {
+    return rimraf(path.cleanDev, cb);
 }
 
 function startWatch() {
@@ -107,12 +131,21 @@ function startWatch() {
     watch(path.watch.images, { usePolling: true }, images)
 }
 
-exports.clean = clean;
+exports.clean = series(clean, cleanDev);
 
 exports.browserSyncStart = browserSyncStart;
-exports.html = html;
-exports.scripts = scripts;
-exports.styles = styles;
-exports.images = images;
 
-exports.default = parallel(styles, html, scripts, images, browserSyncStart, startWatch);
+exports.html = html;
+exports.htmlBuild = htmlBuild;
+
+exports.scripts = scripts;
+exports.scriptsBuild = scriptsBuild;
+
+exports.styles = styles;
+exports.stylesBuild = stylesBuild;
+
+exports.images = images;
+exports.webp = webp;
+
+exports.dev = parallel(styles, html, scripts, images, webp, startWatch, browserSyncStart);
+exports.build = series(clean, htmlBuild, stylesBuild, scriptsBuild, images, webp);

@@ -114,6 +114,7 @@ function webp() {
         // .pipe(newer(path.build.images))
         .pipe(imagewebp())
         .pipe(dest(path.build.images))
+        .pipe(dest(path.dev.images))
 }
 
 

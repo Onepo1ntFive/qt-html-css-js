@@ -10,6 +10,7 @@ const
     imagemin = require("gulp-imagemin"),
     imagewebp = require("gulp-webp"),
     newer = require("gulp-newer"),
+    fontconvert = require("webfont"),
     rimraf = require('rimraf'),
     browserSync = require("browser-sync").create();
 
@@ -21,6 +22,7 @@ const path = {
         js: 'build/js/',
         style: 'build/css/',
         images: 'build/images/',
+        fonts: 'build/fonts/',
         fonts: 'build/fonts/'
     },
     dev: {
@@ -28,6 +30,7 @@ const path = {
         js: 'dev/js/',
         style: 'dev/css/',
         images: 'dev/images/',
+        fonts: 'dev/fonts/',
         fonts: 'dev/fonts/'
     },
     src: {
@@ -35,6 +38,7 @@ const path = {
         js: 'src/**/*.js',
         style: 'src/style/*.scss',
         images: 'src/images/**/*.*',
+        fonts: 'src/fonts/**/*.*',
         fonts: 'src/fonts/**/*.*'
 
     },
@@ -43,6 +47,7 @@ const path = {
         js: 'src/**/*.js',
         style: 'src/style/**/*.scss',
         images: 'src/images/**/*.*',
+        fonts: 'src/fonts/**/*.*',
         fonts: 'src/fonts/**/*.*'
     },
     clean: './build',
@@ -57,6 +62,12 @@ function browserSyncStart() {
     })
 }
 
+// todo шрифты
+function webfonts() {
+    return src(path.src.fonts)
+    .pipe(dest(path.dev.fonts))
+    .pipe(dest(path.build.fonts))
+}
 
 function html() {
     return src(path.src.pug)
@@ -98,7 +109,6 @@ function stylesBuild() {
         .pipe(dest(path.build.style))
 }
 
-// todo Разобраться с dest. Что бы и в build и dev падало
 // todo newer
 function images() {
     return src(path.src.images)
@@ -106,8 +116,8 @@ function images() {
         .pipe(imagemin())
         .pipe(dest(path.build.images))
         .pipe(dest(path.dev.images))
+        .pipe(browserSync.stream())
 }
-// todo Разобраться с dest. Что бы и в build и dev падало
 // todo newer
 function webp() {
     return src(path.src.images)
@@ -115,6 +125,7 @@ function webp() {
         .pipe(imagewebp())
         .pipe(dest(path.build.images))
         .pipe(dest(path.dev.images))
+        .pipe(browserSync.stream())
 }
 
 
@@ -148,5 +159,7 @@ exports.stylesBuild = stylesBuild;
 exports.images = images;
 exports.webp = webp;
 
-exports.dev = parallel(styles, html, scripts, images, webp, startWatch, browserSyncStart);
-exports.build = series(clean, htmlBuild, stylesBuild, scriptsBuild, images, webp);
+exports.webfonts = webfonts;
+
+exports.dev = parallel(styles, html, scripts, images, webp, webfonts, startWatch, browserSyncStart);
+exports.build = series(clean, htmlBuild, stylesBuild, scriptsBuild, webfonts, images, webp);

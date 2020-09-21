@@ -19,6 +19,10 @@
     "gulp-sourcemaps": "^2.6.5",
     "gulp-uglify-es": "^2.0.0",
     "gulp-webp": "^4.0.1",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "webfont": "^9.0.0"
+  },
+  "dependencies": {
+    "dev": "^0.1.3"
   }
 }

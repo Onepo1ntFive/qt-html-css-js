@@ -4,13 +4,12 @@ const
     { src, dest, parallel, series, watch } = require('gulp'),
     pug = require('gulp-pug'),
     sass = require('gulp-sass'),
+    autoprefixer = require('gulp-autoprefixer'),
     sourcemaps = require('gulp-sourcemaps'),
     concat = require('gulp-concat'),
     uglify = require('gulp-uglify-es').default,
     imagemin = require("gulp-imagemin"),
     imagewebp = require("gulp-webp"),
-    newer = require("gulp-newer"),
-    fontconvert = require("webfont"),
     rimraf = require('rimraf'),
     browserSync = require("browser-sync").create();
 
@@ -27,7 +26,7 @@ const path = {
     },
     dev: {
         html: 'dev/',
-        js: 'dev/js/',
+        js: 'dev/',
         style: 'dev/css/',
         images: 'dev/images/',
         fonts: 'dev/fonts/',
@@ -65,8 +64,8 @@ function browserSyncStart() {
 // todo шрифты
 function webfonts() {
     return src(path.src.fonts)
-    .pipe(dest(path.dev.fonts))
-    .pipe(dest(path.build.fonts))
+        .pipe(dest(path.dev.fonts))
+        .pipe(dest(path.build.fonts))
 }
 
 function html() {
@@ -84,12 +83,13 @@ function htmlBuild() {
 
 function scripts() {
     return src(path.src.js)
+        .pipe(uglify())
         .pipe(dest(path.dev.js))
         .pipe(browserSync.stream())
 }
 function scriptsBuild() {
     return src(path.src.js)
-        .pipe(concat('app.min.js'))
+        .pipe(concat('main.min.js'))
         .pipe(uglify())
         .pipe(dest(path.build.js))
 }
@@ -98,6 +98,7 @@ function styles() {
     return src(path.src.style)
         .pipe(sourcemaps.init())
         .pipe(sass())
+        // .pipe(autoprefixer())
         .pipe(sourcemaps.write())
         .pipe(dest(path.dev.style))
         .pipe(browserSync.stream())
@@ -106,6 +107,7 @@ function styles() {
 function stylesBuild() {
     return src(path.src.style)
         .pipe(sass({ outputStyle: 'compressed' }))
+        // .pipe(autoprefixer())
         .pipe(dest(path.build.style))
 }
 

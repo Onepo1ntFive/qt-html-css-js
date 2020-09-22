@@ -12,8 +12,8 @@ html(lang="ru-RU")
                 .b-cats
                     .cats__items
                         .cats__item
-                            input(type="checkbox", id="cat-1")
-                            label.cats__card(for="cat-1")
+                            input.js-checkbox(type="checkbox", id="cat-1")
+                            label.cats__card.js-card(for="cat-1")
                                 .cats__content
                                     .cats__subtitlee Сказочное заморское яство
                                     .cats__title Нямушка
@@ -27,3 +27,39 @@ html(lang="ru-RU")
                             .cats__messages
                                 div Чего сидишь? Порадуй котэ, .
                                     label(for="cat-1") купи
+
+                        .cats__item
+                            input.js-checkbox(type="checkbox", id="cat-2", checked)
+                            label.cats__card.js-card(for="cat-2")
+                                .cats__content
+                                    .cats__subtitlee Сказочное заморское яство
+                                    .cats__title Нямушка
+                                    .cats__with с фуа-гра
+                                .cats__pic
+                                    picture
+                                        source(srcset="images/cat-face.webp" type="image/webp")
+                                        source(srcset="images/cat-face.png" type="image/png")
+                                        img(src="images/cat-face.png" alt="cat-face")
+
+                            .cats__messages
+                                div Чего сидишь? Порадуй котэ, .
+                                    label(for="cat-2") купи
+                                    
+                        .cats__item
+                            input.js-checkbox(type="checkbox", id="cat-3", disabled)
+                            label.cats__card.js-card(for="cat-3")
+                                .cats__content
+                                    .cats__subtitlee Сказочное заморское яство
+                                    .cats__title Нямушка
+                                    .cats__with с фуа-гра
+                                .cats__pic
+                                    picture
+                                        source(srcset="images/cat-face.webp" type="image/webp")
+                                        source(srcset="images/cat-face.png" type="image/png")
+                                        img(src="images/cat-face.png" alt="cat-face")
+
+                            .cats__messages
+                                div Чего сидишь? Порадуй котэ, .
+                                    label(for="cat-3") купи
+
+        script(src="js/main.js")

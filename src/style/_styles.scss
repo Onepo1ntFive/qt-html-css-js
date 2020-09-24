@@ -1,10 +1,20 @@
+// ----------
+$color-default: #1698d9;
+$color-default-hover: #2ea8e5;
+$color-checked: #d91667;
+$color-checked-hover: #e52e7a;
+$color-disabled: #b3b3b3;
+
+$screen-tablet: 768px;
+$screen-desktop: 1200px;
+// ----------
 html,
 body {
     width: 100%;
     height: 100%;
 }
 html {
-    font-size:62.5%;
+    font-size: 62.5%;
 }
 body {
     font-size: 1.6rem;
@@ -22,10 +32,13 @@ h1 {
 // ----------
 .l-wrap {
     display: flex;
-    flex-flow: column nowrap;
-    justify-content: center;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
     width: 100%;
+    height: 100%;
     min-height: 100%;
+    overflow: hidden;
     background:  linear-gradient(to bottom, rgba(0,0,0,0.5) 0%,rgba(0,0,0,0) 50%,rgba(0,0,0,0.5) 100%), url('../images/bg-pattern.png') 50% 50% repeat, #000000;
 
     .wrap {
@@ -45,18 +58,37 @@ $block-name: cats;
             margin-right: -40px;
             display: flex;
             flex-flow: row wrap;
+            justify-content: center;
         }
         &__item {
             padding-left: 40px;
             padding-right: 40px;
+            display: flex;
+            flex-flow: column nowrap;
             flex: none;
-            width: 33.33%;
+            width: 100%;
             box-sizing: border-box;
+
+            @media (min-width: $screen-tablet) {
+                width: 50%;
+            }
+            @media (min-width: $screen-desktop) {
+                width: 33.33%;
+            }
+
+            & > input {
+                opacity: 0;
+                position: absolute;
+                top: 0;
+                left: 0;
+                pointer-events: none;
+            }
         }
         &__card {
             display: flex;
             flex-flow: column nowrap;
             justify-content: space-between;
+            flex: 1 auto;
             position: relative;
             z-index: 1;
             cursor: pointer;
@@ -72,7 +104,7 @@ $block-name: cats;
                 width: 100%;
                 height: 100%;
                 box-sizing: border-box;
-                background: linear-gradient(135deg, transparent 30px, #1698d9 0) top left;
+                background: linear-gradient(135deg, transparent 30px, $color-default 0) top left;
             }
             &::before {
                content: '';
@@ -87,34 +119,104 @@ $block-name: cats;
                box-sizing: border-box;
                background: linear-gradient(135deg, transparent 30px, #fff 0) top left;
             }
-
             &:hover::after {
-                background: linear-gradient(135deg, transparent 30px, #2ea8e5 0) top left;
+                background: linear-gradient(135deg, transparent 30px, $color-default-hover 0) top left;
+            }
+        }
+        &__content {}
+        &__title {
+            font-size: 4.8rem;
+            font-weight: bold;
+            color: #000000;
+        }
+        &__with {
+            font-size: 2.4rem;
+            font-weight: bold;
+            color: #000000;
+        }
+        &__options {
+            padding-top: 20px;
+            padding-bottom: 20px;
+
+            li {
+                padding-bottom: 3px;
+            }
+        }
+        &__weight {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            z-index: 1;
+            width: 80px;
+            height: 80px;
+            overflow: hidden;
+            background-color: $color-default;
+            border-radius: 1000px;
+            text-align: center;
+            line-height: 80px;
+            font-size: 2.1rem;
+
+            span {
+                display: inline-block;
+                vertical-align: middle;
+                max-width: 100%;
+                line-height: 1;
+            }
+            ins {
+                display: block;
+                text-decoration: none;
+                line-height: 0.9;
+                font-size: 4.2rem;
+            }
+        }
+        &__messages {
+            padding-top: 10px;
+        }
+        &__message {
+            label {
+                border-bottom: 1px dashed $color-default;
+                color: $color-default;
+                cursor: pointer;
+
+                &:hover {
+                    border-bottom-color: transparent;
+                }
             }
         }
 
         // checked
         &__item input:checked { 
             ~ .#{$block-name}__card::after {
-                background: linear-gradient(135deg, transparent 30px, #d91667 0) top left;
+                background: linear-gradient(135deg, transparent 30px, $color-checked 0) top left;
             }
-        }
-        &__item input:checked {
             ~ .#{$block-name}__card:not(.cats__card--nohover):hover::after  {
-                background: linear-gradient(135deg, transparent 30px, #e62e7a 0) top left;
-                background: linear-gradient(135deg, transparent 30px, #0f0 0) top left;
+                background: linear-gradient(135deg, transparent 30px, $color-checked-hover 0) top left;
+            }
+            ~ .#{$block-name}__card .#{$block-name}__weight {
+                background-color: $color-checked;
+            }
+            ~ .#{$block-name}__card:not(.cats__card--nohover):hover .#{$block-name}__weight {
+                background-color: $color-checked-hover;
             }
         }
 
         // disabled
-        &__item input:disabled { 
-            ~ .#{$block-name}__card::after {
-                background: linear-gradient(135deg, transparent 30px, #b3b3b3 0) top left;
-            }
-        }
         &__item input:disabled {
+            ~ .#{$block-name}__card {
+                cursor: default;
+
+                .#{$block-name}__pic {
+                    opacity: 0.5;
+                }
+            }
+            ~ .#{$block-name}__card::after {
+                background: linear-gradient(135deg, transparent 30px, $color-disabled 0) top left;
+            }
             ~ .#{$block-name}__card:hover::after  {
-                background: linear-gradient(135deg, transparent 30px, #b3b3b3 0) top left;
+                background: linear-gradient(135deg, transparent 30px, $color-disabled 0) top left;
+            }
+            ~ .#{$block-name}__card .#{$block-name}__weight {
+                background-color: $color-disabled;
             }
         }
 
@@ -122,7 +224,6 @@ $block-name: cats;
             padding: 20px 50px 0;
             color: #666666;
         }
-
         &__pic {
             padding: 4px;
 

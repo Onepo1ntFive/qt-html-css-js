@@ -3,7 +3,7 @@ html(lang="ru-RU")
     head
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        title Document
+        title Накорми кота!
         link(rel="stylesheet", href="css/main.css")
     body
         .l-wrap
@@ -18,15 +18,28 @@ html(lang="ru-RU")
                                     .cats__subtitlee Сказочное заморское яство
                                     .cats__title Нямушка
                                     .cats__with с фуа-гра
+                                    ul.cats__options
+                                        li 
+                                            strong 10 
+                                            |  порций
+                                        li мышь в подарок
+                                .cats__weight
+                                    span
+                                        ins 0,5
+                                        | кг
                                 .cats__pic
                                     picture
                                         source(srcset="images/cat-face.webp" type="image/webp")
                                         source(srcset="images/cat-face.png" type="image/png")
                                         img(src="images/cat-face.png" alt="cat-face")
-
                             .cats__messages
-                                div Чего сидишь? Порадуй котэ, .
-                                    label(for="cat-1") купи
+                                .cats__message.cats__message--default 
+                                    | Чего сидишь? Порадуй котэ, 
+                                    label(for="cat-2") купи.
+                                .cats__message.cats__message--checked 
+                                    | Печень утки разварная с артишоками.
+                                .cats__message.cats__message--disabled 
+                                    | Печалька, с фуа-гра закончился.
 
                         .cats__item
                             input.js-checkbox(type="checkbox", id="cat-2", checked)
@@ -35,15 +48,30 @@ html(lang="ru-RU")
                                     .cats__subtitlee Сказочное заморское яство
                                     .cats__title Нямушка
                                     .cats__with с фуа-гра
+                                    ul.cats__options
+                                        li 
+                                            strong 40
+                                            |  порций
+                                        li 
+                                            strong 2
+                                            |  мыши в подарок
+                                .cats__weight
+                                    span
+                                        ins 2
+                                        | кг
                                 .cats__pic
                                     picture
                                         source(srcset="images/cat-face.webp" type="image/webp")
                                         source(srcset="images/cat-face.png" type="image/png")
                                         img(src="images/cat-face.png" alt="cat-face")
-
                             .cats__messages
-                                div Чего сидишь? Порадуй котэ, .
-                                    label(for="cat-2") купи
+                                .cats__message.cats__message--default 
+                                    | Чего сидишь? Порадуй котэ, 
+                                    label(for="cat-2") купи.
+                                .cats__message.cats__message--checked 
+                                    | Печень утки разварная с артишоками.
+                                .cats__message.cats__message--disabled 
+                                    | Печалька, с фуа-гра закончился.
                                     
                         .cats__item
                             input.js-checkbox(type="checkbox", id="cat-3", disabled)
@@ -52,14 +80,31 @@ html(lang="ru-RU")
                                     .cats__subtitlee Сказочное заморское яство
                                     .cats__title Нямушка
                                     .cats__with с фуа-гра
+                                    ul.cats__options
+                                        li 
+                                            strong 100
+                                            |  порций
+                                        li 
+                                            strong 5
+                                            |  мышей в подарок
+                                        li заказчик доволен
+                                .cats__weight
+                                    span
+                                        ins 5
+                                        | кг
                                 .cats__pic
                                     picture
                                         source(srcset="images/cat-face.webp" type="image/webp")
                                         source(srcset="images/cat-face.png" type="image/png")
                                         img(src="images/cat-face.png" alt="cat-face")
-
                             .cats__messages
-                                div Чего сидишь? Порадуй котэ, .
-                                    label(for="cat-3") купи
+                                .cats__message.cats__message--default 
+                                    | Чего сидишь? Порадуй котэ, 
+                                    label(for="cat-2") купи.
+                                    | fsefsef
+                                .cats__message.cats__message--checked 
+                                    | Печень утки разварная с артишоками.
+                                .cats__message.cats__message--disabled 
+                                    | Печалька, с фуа-гра закончился.
 
         script(src="js/main.js")

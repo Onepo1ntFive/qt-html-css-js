@@ -4,6 +4,7 @@ const
     { src, dest, parallel, series, watch } = require('gulp'),
     pug = require('gulp-pug'),
     sass = require('gulp-sass'),
+    autoprefixer = require('gulp-autoprefixer'),
     sourcemaps = require('gulp-sourcemaps'),
     concat = require('gulp-concat'),
     uglify = require('gulp-uglify-es').default,
@@ -11,8 +12,6 @@ const
     imagewebp = require("gulp-webp"),
     rimraf = require('rimraf'),
     browserSync = require("browser-sync").create();
-
-// use later
 
 const path = {
     build: {
@@ -64,6 +63,9 @@ function browserSyncStart() {
 function webfonts() {
     return src(path.src.fonts)
         .pipe(dest(path.dev.fonts))
+}
+function webfontsBuild() {
+    return src(path.src.fonts)
         .pipe(dest(path.build.fonts))
 }
 
@@ -73,7 +75,6 @@ function html() {
         .pipe(dest(path.dev.html))
         .pipe(browserSync.stream())
 }
-// todo минификация
 function htmlBuild() {
     return src(path.src.pug)
         .pipe(pug())
@@ -97,36 +98,43 @@ function styles() {
     return src(path.src.style)
         .pipe(sourcemaps.init())
         .pipe(sass())
-        // .pipe(autoprefixer())
+        .pipe(autoprefixer({
+            "overrideBrowserslist": ["last 10 version"]
+        }))
         .pipe(sourcemaps.write())
         .pipe(dest(path.dev.style))
         .pipe(browserSync.stream())
 }
-// todo минификация
 function stylesBuild() {
     return src(path.src.style)
         .pipe(sass({ outputStyle: 'compressed' }))
-        // .pipe(autoprefixer())
+        .pipe(autoprefixer({
+            "overrideBrowserslist": ["last 10 version"]
+        }))
         .pipe(dest(path.build.style))
 }
 
-// todo newer
 function images() {
     return src(path.src.images)
-        // .pipe(newer(path.build.images))
         .pipe(imagemin())
-        .pipe(dest(path.build.images))
         .pipe(dest(path.dev.images))
         .pipe(browserSync.stream())
 }
-// todo newer
+function imagesBuild() {
+    return src(path.src.images)
+        .pipe(imagemin())
+        .pipe(dest(path.build.images))
+}
 function webp() {
     return src(path.src.images)
-        // .pipe(newer(path.build.images))
         .pipe(imagewebp())
-        .pipe(dest(path.build.images))
         .pipe(dest(path.dev.images))
         .pipe(browserSync.stream())
+}
+function webpBuild() {
+    return src(path.src.images)
+        .pipe(imagewebp())
+        .pipe(dest(path.build.images))
 }
 
 
@@ -144,8 +152,6 @@ function startWatch() {
     watch(path.watch.images, { usePolling: true }, images)
 }
 
-exports.clean = series(clean, cleanDev);
-
 exports.browserSyncStart = browserSyncStart;
 
 exports.html = html;
@@ -157,10 +163,16 @@ exports.scriptsBuild = scriptsBuild;
 exports.styles = styles;
 exports.stylesBuild = stylesBuild;
 
+exports.imagesBuild = imagesBuild;
 exports.images = images;
+
+exports.webpBuild = webpBuild;
 exports.webp = webp;
 
 exports.webfonts = webfonts;
+exports.webfontsBuild = webfontsBuild;
 
-exports.dev = parallel(styles, html, scripts, images, webp, webfonts, startWatch, browserSyncStart);
-exports.build = series(clean, htmlBuild, stylesBuild, scriptsBuild, webfonts, images, webp);
+exports.clean = series(clean, cleanDev);
+
+exports.dev = parallel(browserSyncStart, styles, html, scripts, images, webp, webfonts, startWatch);
+exports.build = series(clean, htmlBuild, stylesBuild, scriptsBuild, webfontsBuild, imagesBuild, webpBuild);

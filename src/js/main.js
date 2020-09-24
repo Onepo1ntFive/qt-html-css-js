@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-    
+
     let inputs = document.querySelectorAll('.js-checkbox');
     for (var i = 0; i < inputs.length; i++) {
         let el = inputs[i];
@@ -22,5 +22,3 @@
     }
 
 })(); // ready
-
-

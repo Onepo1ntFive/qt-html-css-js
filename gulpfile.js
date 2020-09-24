@@ -4,7 +4,6 @@ const
     { src, dest, parallel, series, watch } = require('gulp'),
     pug = require('gulp-pug'),
     sass = require('gulp-sass'),
-    autoprefixer = require('gulp-autoprefixer'),
     sourcemaps = require('gulp-sourcemaps'),
     concat = require('gulp-concat'),
     uglify = require('gulp-uglify-es').default,

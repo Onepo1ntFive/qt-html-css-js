@@ -89,7 +89,7 @@ function scripts() {
 }
 function scriptsBuild() {
     return src(path.src.js)
-        .pipe(concat('main.min.js'))
+        .pipe(concat('main.js'))
         .pipe(uglify())
         .pipe(dest(path.build.js))
 }

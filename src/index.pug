@@ -7,110 +7,85 @@ html(lang="ru-RU")
         link(rel="stylesheet", href="css/main.css")
     body
         .l-wrap
+            - 
+                var items = {
+                    1: {
+                        'title': 'Нямушка',
+                        'with': 'с фуа-гра',
+                        'options': {
+                            1: '10 порций',
+                            2: 'мышь в подарок'
+                            },
+                        'weight': '0,5',
+                        'img': 'images/cat-face',
+                        'message': 'Печень утки разварная с артишоками.',
+                        }, 
+                    2: {
+                        'title': 'Нямушка',
+                        'with': 'с рыбой',
+                        'options': {
+                            1: '40 порций',
+                            2: '2 мыши в подарок'
+                            },
+                        'weight': '2',
+                        'img': 'images/cat-face',
+                        'message': 'Головы щучьи с чесноком да свежайшая сёмгушка.',
+                        'checked': 'checked',
+                        }, 
+                    3: {
+                        'title': 'Нямушка',
+                        'with': 'с курой',
+                        'options': {
+                            1: '100 порций',
+                            2: '5 мышей в подарок',
+                            2: 'заказчик доволен',
+                            },
+                        'weight': '5',
+                        'img': 'images/cat-face',
+                        'message': 'Филе из цыплят с трюфелями в бульоне.',
+                        'disabled': 'disabled',
+                        }, 
+                }
+
             .wrap__inner
                 h1 Ты сегодня покормил кота?
                 .b-cats
                     .cats__items
-                        //- todo Попробовать сделать циклом
-                        .cats__item
-                            input.js-checkbox(type="checkbox", id="cat-1")
-                            label.cats__card.js-card(for="cat-1")
-                                .cats__content
-                                    .cats__subtitle Сказочное заморское яство
-                                    .cats__subtitle-no Котэ не одобряет?
-                                    .cats__title Нямушка
-                                    .cats__with с фуа-гра
-                                    ul.cats__options
-                                        li 
-                                            strong 10 
-                                            |  порций
-                                        li мышь в подарок
-                                .cats__weight
-                                    span
-                                        ins 0,5
-                                        | кг
-                                .cats__pic
-                                    picture
-                                        source(srcset="images/cat-face.webp" type="image/webp")
-                                        source(srcset="images/cat-face.png" type="image/png")
-                                        img(src="images/cat-face.png" alt="cat-face")
-                            .cats__messages
-                                .cats__message.cats__message--default 
-                                    | Чего сидишь? Порадуй котэ, 
-                                    label(for="cat-1") купи
-                                    | .
-                                .cats__message.cats__message--checked 
-                                    | Печень утки разварная с артишоками.
-                                .cats__message.cats__message--disabled 
-                                    | Печалька, с фуа-гра закончился.
-
-                        .cats__item
-                            input.js-checkbox(type="checkbox", id="cat-2", checked)
-                            label.cats__card.js-card(for="cat-2")
-                                .cats__content
-                                    .cats__subtitle Сказочное заморское яство
-                                    .cats__subtitle-no Котэ не одобряет?
-                                    .cats__title Нямушка
-                                    .cats__with с рыбой
-                                    ul.cats__options
-                                        li 
-                                            strong 40
-                                            |  порций
-                                        li 
-                                            strong 2
-                                            |  мыши в подарок
-                                .cats__weight
-                                    span
-                                        ins 2
-                                        | кг
-                                .cats__pic
-                                    picture
-                                        source(srcset="images/cat-face.webp" type="image/webp")
-                                        source(srcset="images/cat-face.png" type="image/png")
-                                        img(src="images/cat-face.png" alt="cat-face")
-                            .cats__messages
-                                .cats__message.cats__message--default 
-                                    | Чего сидишь? Порадуй котэ, 
-                                    label(for="cat-2") купи
-                                    | .
-                                .cats__message.cats__message--checked 
-                                    | Головы щучьи с чесноком да свежайшая сёмгушка.
-                                .cats__message.cats__message--disabled 
-                                    | Печалька, с рыбой закончился.
-                                    
-                        .cats__item
-                            input.js-checkbox(type="checkbox", id="cat-3", disabled)
-                            label.cats__card.js-card(for="cat-3")
-                                .cats__content
-                                    .cats__subtitle Сказочное заморское яство
-                                    .cats__subtitle-no Котэ не одобряет?
-                                    .cats__title Нямушка
-                                    .cats__with с курой
-                                    ul.cats__options
-                                        li 
-                                            strong 100
-                                            |  порций
-                                        li 
-                                            strong 5
-                                            |  мышей в подарок
-                                        li заказчик доволен
-                                .cats__weight
-                                    span
-                                        ins 5
-                                        | кг
-                                .cats__pic
-                                    picture
-                                        source(srcset="images/cat-face.webp" type="image/webp")
-                                        source(srcset="images/cat-face.png" type="image/png")
-                                        img(src="images/cat-face.png" alt="cat-face")
-                            .cats__messages
-                                .cats__message.cats__message--default 
-                                    | Чего сидишь? Порадуй котэ, 
-                                    label(for="cat-3") купи
-                                    | .
-                                .cats__message.cats__message--checked 
-                                    | Филе из цыплят с трюфелями в бульоне.
-                                .cats__message.cats__message--disabled 
-                                    | Печалька, с курой закончился.
-
+                        each item, key in items
+                            .cats__item
+                                input.js-checkbox(
+                                        type="checkbox", 
+                                        id="cat-" + key,
+                                        checked=(item.checked!==undefined ? "checked" : undefined),
+                                        disabled=(item.disabled!==undefined ? "disabled" : undefined),
+                                    )
+                                label.cats__card.js-card(for="cat-" + key)
+                                    .cats__content
+                                        .cats__subtitle Сказочное заморское яство
+                                        .cats__subtitle-no Котэ не одобряет?
+                                        .cats__title #{item.title}
+                                        .cats__with #{item.with}
+                                        ul.cats__options
+                                            li 
+                                                strong 10 
+                                                |  порций
+                                            li мышь в подарок
+                                    .cats__weight
+                                        span
+                                            ins #{item.weight}
+                                            | кг
+                                    .cats__pic
+                                        picture
+                                            source(srcset=item.img + ".webp" type="image/webp")
+                                            source(srcset=item.img + ".png" type="image/png")
+                                            img(src=item.img + ".png" alt="cat-face")
+                                .cats__messages
+                                    .cats__message.cats__message--default 
+                                        | Чего сидишь? Порадуй котэ, 
+                                        label(for="cat-" + key) купи
+                                        | .
+                                    .cats__message.cats__message--checked 
+                                        | #{item.message}
+                                    .cats__message.cats__message--disabled 
+                                        | Печалька, #{item.with} закончился.
         script(src="js/main.js")
